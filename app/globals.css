@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Nunito", sans-serif;
+}
+
+/* confete caindo */
+@keyframes cair {
+  0% { transform: translateY(-4vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0.8; }
+}
+.confete { animation-name: cair; animation-timing-function: linear; animation-fill-mode: forwards; }
+
+/* tremidinha gentil no erro */
+@keyframes treme {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.treme { animation: treme 0.3s ease-in-out 2; }
+
+/* estrelinhas do céu noturno (modo descanso) */
+@keyframes piscar {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+.estrela { animation: piscar 2.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .confete, .treme, .estrela, .animate-bounce, .animate-pulse { animation: none !important; }
+}
