@@ -9,11 +9,13 @@ import { MUNDOS, fasesDoMundo } from "@/lib/levels";
 import { MARCOS, cosmeticoPorId } from "@/lib/xp";
 import { Progresso, PROGRESSO_INICIAL, carregarProgresso, salvarProgresso } from "@/lib/progress";
 import { desafioCompletoHoje } from "@/lib/daily";
+import { isAdminEmail } from "@/lib/admin";
 
 export default function Hub() {
   const router = useRouter();
   const supabase = createClient();
   const [userId, setUserId] = useState<string | null>(null);
+  const [souAdmin, setSouAdmin] = useState(false);
   const [prog, setProg] = useState<Progresso>(PROGRESSO_INICIAL);
   const [carregado, setCarregado] = useState(false);
   const [diarioFeito, setDiarioFeito] = useState(false);
@@ -30,6 +32,7 @@ export default function Hub() {
         return;
       }
       setUserId(user.id);
+      setSouAdmin(isAdminEmail(user.email));
       const p = await carregarProgresso(supabase, user.id);
       setProg(p);
       setDiarioFeito(await desafioCompletoHoje(supabase, user.id));
@@ -126,6 +129,11 @@ export default function Hub() {
             </p>
             <XpBar totalXp={prog.totalXp} />
           </div>
+          {souAdmin && (
+            <Link href="/admin" className="font-body text-xs font-bold opacity-50" aria-label="Painel admin">
+              🛠️ admin
+            </Link>
+          )}
           <button onClick={sair} className="font-body text-xs font-bold opacity-50" aria-label="Sair">
             sair
           </button>

@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isAdminEmail } from "@/lib/admin";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -34,9 +35,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // protege o painel admin: só o e-mail autorizado passa
+  if (request.nextUrl.pathname.startsWith("/admin") && !isAdminEmail(user?.email)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/jogar/:path*", "/auth/:path*"],
+  matcher: ["/jogar/:path*", "/auth/:path*", "/admin/:path*"],
 };
